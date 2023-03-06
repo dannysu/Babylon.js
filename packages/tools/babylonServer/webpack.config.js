@@ -73,6 +73,7 @@ module.exports = (env) => {
         devtool: production ? "source-map" : "eval-cheap-module-source-map",
         entry: {
             sceneTs: "./src/sceneTs.ts",
+            spacewarp: "./src/spacewarp.ts",
             sceneJs: "./src/sceneJs.js",
             babylon: `./src/core/index-${source}.ts`,
             "gui/babylon.gui.min": `./src/gui/index-${source}.ts`,

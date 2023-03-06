@@ -30,6 +30,7 @@ module.exports = (env) => {
         entry: {
             sceneTs: "./src/sceneTs.ts",
             sceneJs: "./src/sceneJs.js",
+            spacewarp: "./src/spacewarp.js",
         },
         output: {
             path: path.resolve(__dirname, "dist"),

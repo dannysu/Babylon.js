@@ -132,6 +132,12 @@ export class ShaderMaterial extends PushMaterial {
     private _cachedWorldViewProjectionMatrix = new Matrix();
     private _multiview: boolean = false;
 
+    /**
+     * Previous world matrices of meshes carrying this material
+     * Used for computing velocity
+     */
+    private _previousWorldMatrices: { [index: number]: Matrix } = {};
+
     /** Define the Url to load snippets */
     public static SnippetUrl = Constants.SnippetUrl;
 
@@ -668,7 +674,7 @@ export class ShaderMaterial extends PushMaterial {
 
         if (useInstances) {
             defines.push("#define INSTANCES");
-            MaterialHelper.PushAttributesForInstances(attribs);
+            MaterialHelper.PushAttributesForInstances(attribs, true);
             if (mesh?.hasThinInstances) {
                 defines.push("#define THIN_INSTANCES");
                 if (mesh && mesh.isVerticesDataPresent(VertexBuffer.ColorInstanceKind)) {
@@ -969,6 +975,22 @@ export class ShaderMaterial extends PushMaterial {
                 effect.setMatrix("viewProjection", this.getScene().getTransformMatrix());
                 if (this._multiview) {
                     effect.setMatrix("viewProjectionR", this.getScene()._transformMatrixR);
+                }
+            }
+
+            if (!useSceneUBO && this._options.uniforms.indexOf("previousWorld") !== -1 && mesh) {
+                if (!this._previousWorldMatrices[mesh.uniqueId]) {
+                    this._previousWorldMatrices[mesh.uniqueId] = world.clone();
+                }
+
+                effect.setMatrix("previousWorld", this._previousWorldMatrices[mesh.uniqueId]);
+                this._previousWorldMatrices[mesh.uniqueId] = world.clone();
+            }
+
+            if (!useSceneUBO && this._options.uniforms.indexOf("previousViewProjection") !== -1) {
+                effect.setMatrix("previousViewProjection", this.getScene()._getPreviousTransformMatrix());
+                if (this._multiview) {
+                    effect.setMatrix("previousViewProjectionR", this.getScene()._getPreviousTransformMatrixR());
                 }
             }
 

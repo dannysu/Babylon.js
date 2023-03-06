@@ -18,6 +18,8 @@ export class WebGLRenderTargetWrapper extends RenderTargetWrapper {
     public _colorTextureArray: Nullable<WebGLTexture> = null;
     public _depthStencilTextureArray: Nullable<WebGLTexture> = null;
 
+    public _alwaysDisposeOnlyFramebuffers: boolean = false;
+
     constructor(isMulti: boolean, isCube: boolean, size: TextureSize, engine: ThinEngine, context: WebGLRenderingContext) {
         super(isMulti, isCube, size, engine);
 
@@ -108,6 +110,10 @@ export class WebGLRenderTargetWrapper extends RenderTargetWrapper {
 
     public dispose(disposeOnlyFramebuffers = false): void {
         const gl = this._context;
+
+        if (this._alwaysDisposeOnlyFramebuffers) {
+            disposeOnlyFramebuffers = true;
+        }
 
         if (!disposeOnlyFramebuffers) {
             if (this._colorTextureArray) {

@@ -4,6 +4,7 @@ export * from "./engine.debugging";
 export * from "./engine.query";
 export * from "./engine.transformFeedback";
 export * from "./engine.multiview";
+export * from "./engine.spacewarp";
 export * from "./engine.rawTexture";
 export * from "./engine.dynamicTexture";
 export * from "./engine.externalTexture";
